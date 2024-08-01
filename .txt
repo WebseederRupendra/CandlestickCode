@@ -1,0 +1,1 @@
+mongodb://atlas-sql-669e7a9b47ec620585ab3186-awqqe.a.query.mongodb.net/sample_airbnb?ssl=true&authSource=admin
