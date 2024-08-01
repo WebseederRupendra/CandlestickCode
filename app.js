@@ -1,7 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
-// const basicsRoutes = require('./Routes/');
 const UserRoutes = require('./Routes/UserRouter');
 const BasicsRoutes = require('./Routes/BasicsRoute');
 const UserProgressRoutes = require('./Routes/UserProgressRoutes');
@@ -30,6 +29,11 @@ mongoose.connect(mongoURI, {
 
 const app = express();
 
+app.get("/", (req, res) => {
+  res.send("working");
+});
+
+
 // Middleware
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -51,7 +55,9 @@ app.use((err, req, res, next) => {
 });
 
 // Start Server
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+// const PORT = process.env.PORT || 5000;
+// app.listen(PORT, () => {
+//   console.log(`Server running on port ${PORT}`);
+// });
+
+module.exports= app;
