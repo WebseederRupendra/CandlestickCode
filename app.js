@@ -29,6 +29,9 @@ mongoose.connect(mongoURI, {
 
 const app = express();
 
+app.get('/', (req, res) => {
+  res.send('Hello from Express');
+});
 // Middleware
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));
