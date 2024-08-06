@@ -2,21 +2,22 @@ const crypto = require("crypto");
 const nodemailer = require("nodemailer");
 const bcrypt = require('bcryptjs');
 
+// generate a 6-digit OTP
 const generateOTP = () => {
   return Math.floor(100000 + Math.random() * 900000).toString();
 };
 
-
 const transporter = nodemailer.createTransport({
   host: process.env.SMTP_HOST,
   port: process.env.SMTP_PORT,
-  secure: false, // true for 465, false for other ports
+  secure: false, 
   auth: {
     user: process.env.SMTP_USER,
     pass: process.env.SMTP_PASS,
   },
 });
 
+// send OTP to the user's email
 const sendOtpEmail = async (email, otp) => {
   const mailOptions = {
     from: process.env.SMTP_USER,
@@ -33,6 +34,7 @@ const sendOtpEmail = async (email, otp) => {
   }
 };
 
+// Function to create a new user
 const createUser = async (email, password, number) => {
   const hashedPassword = await bcrypt.hash(password, 10);
   const otp = generateOTP();
@@ -42,14 +44,10 @@ const createUser = async (email, password, number) => {
   return newUser;
 };
 
+// Function to verify a user's OTP
 const verifyUserOtp = async (email, otp) => {
-  console.log('email', email);
-  console.log('otp', otp);
-  
   const user = await User.findOne({ email });
-  console.log('user find', user.otp)
-  if (user && user.otp == otp) {
-    console.log('woek')
+  if (user && user.otp === otp) {
     user.otp = "";
     await user.save();
     return true;
@@ -57,28 +55,24 @@ const verifyUserOtp = async (email, otp) => {
   return false;
 };
 
+// Function to log in a user
 const loginUser = async (email, password, secret, expiresIn) => {
   try {
-    // Find user by email
     const user = await User.findOne({ email });
-
     if (!user) {
       return { error: "Invalid login credentials" };
     }
-
-    // Check if the password matches
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       return { error: "Invalid login credentials" };
     }
-
-    // Generate JWT token
     const token = jwt.sign({ _id: user._id.toString() }, secret, { expiresIn });
     return { token };
   } catch (error) {
     throw new Error(error.message);
   }
 };
+
 const updateOtpForUser = async (user, otp) => {
   user.otp = otp;
   await user.save();
@@ -91,4 +85,12 @@ const updateUserPassword = async (user, newPassword) => {
   await user.save();
 };
 
-module.exports = {createUser, generateOTP, sendOtpEmail,verifyUserOtp,loginUser,updateOtpForUser,updateOtpForUser,updateUserPassword };
+module.exports = { 
+  createUser, 
+  generateOTP, 
+  sendOtpEmail, 
+  verifyUserOtp, 
+  loginUser, 
+  updateOtpForUser, 
+  updateUserPassword 
+};

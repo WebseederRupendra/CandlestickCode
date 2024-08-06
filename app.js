@@ -32,6 +32,21 @@ const app = express();
 app.get('/', (req, res) => {
   res.send('Hello from Express');
 });
+
+// Example route to handle POST request with JSON body
+app.post('/example', (req, res) => {
+  const data = req.body;
+
+  // Ensure req.body is JSON
+  if (typeof data !== 'object') {
+    return res.status(400).json({ error: 'Invalid JSON format' });
+  }
+
+  // Handle the data
+  console.log('Received JSON:', data);
+  res.status(200).json({ message: 'Data received successfully' });
+});
+
 // Middleware
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));
